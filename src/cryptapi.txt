@@ -1,0 +1,85 @@
+HawkEncrypt API list.
+
+Version 0.91 beta
+
+HawkCrypt is a cryptographic library for password protecting data. It uses MD5
+to produce 128 bit encryption keys and random 128 bit (16 byte) salt values.
+Blowfish is used to perform 128 bit encryption. It also provides MD5 hashing
+to add a 32 bit message authentication code (MAC) to packets using a shared
+password. The MAC is separate from encryption so you can authenticate without
+encrypting is you choose. The 32 bit MAC is created by folding the 128 bit MD5
+hash down to 32 bits.
+
+If you want to use encryption with a MAC, I suggest you encrypt then add the
+MAC. That way you can validate before you decrypt and save some CPU cycles if
+you need to discard an invalid packet.
+
+
+hcrypt_salt* hcryptNewSalt(void)
+
+  Creates a salt value (or salt for short) that can be used with hcryptNewKey
+  to create hacker resistant keys. The hcrypt_salt is an array of 16 unsigned
+  bytes (128 bits). The creator of the salt must send it to the other clients
+  so that they may use it along with the password to create the key.
+
+
+void hcryptDeleteSalt(hcrypt_salt *salt)
+
+  Deletes the salt.
+
+
+hcrypt_key* hcryptNewKey(const char *password, const hcrypt_salt* salt)
+
+  Creates an encryption key from a password and an optional salt. Both the
+  sender and receiver must use the same password and optional salt to create
+  the key. The salt is created by hcryptNewSalt and sent to each
+  client. If salt is NULL then only the password will be used to create the key,
+  and it will be easier for a hacker to use a dictionary attack.
+
+
+void hcryptDeleteKey(hcrypt_key *key)
+
+  Delete the key.
+
+
+void hcryptEncryptPacket(unsigned char *in, unsigned char *out, int buflen,
+                         hcrypt_key *key)
+
+  Encrypts a packet from in to out. buflen is the number of bytes to encrypt.
+  in and out may be the same buffer.
+
+
+void hcryptEncryptStream(unsigned char *in, unsigned char *out, int buflen,
+                         hcrypt_key *key)
+
+  Encrypts a byte stream from in to out. buflen is the number of bytes to encrypt.
+  This should only be used for files, TCP streams, or other reliable streams. 
+  in and out may be the same buffer.
+
+void hcryptDecryptPacket(unsigned char *in, unsigned char *out, int buflen,
+                         hcrypt_key *key)
+
+  Decrypts a packet from in to out. buflen is the number of bytes to decrypt.
+  in and out may be the same buffer.
+
+
+void hcryptDecryptStream(unsigned char *in, unsigned char *out, int buflen,
+                         hcrypt_key *key)
+
+  Decrypts a byte stream from in to out. buflen is the number of bytes to decrypt.
+  This should only be used for files, TCP streams, or other reliable streams. 
+  in and out may be the same buffer.
+
+
+void hcryptSignPacket(unsigned char *in, int buflen, hcrypt_key *key)
+
+  Using key, appends a 4 byte MD5 hash to the end of in. You MUST make sure
+  that it is long enough to store 4 more bytes, and make sure you add 4 bytes
+  to buflen after the call!
+
+
+int hcryptAuthenticatePacket(unsigned char *in, int buflen, hcrypt_key *key)
+
+  Using key, compares the MD5 hash with the last 4 bytes of in. If they match it
+  returns 1, otherwise it returns 0. Make sure you either discard or do not use
+  the last 4 bytes of the packet since they were added by hcryptSignPacket.

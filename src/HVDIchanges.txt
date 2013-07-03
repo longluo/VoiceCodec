@@ -1,0 +1,137 @@
+Change log for HawkVoiceDI
+
+Version 0.91 beta
+Fixed bug in hcryptNewKey
+Fixed struct defines in lpc10.h so that it can be used in C++ projects
+Added hcryptSignPacket and hcryptAuthenticatePacket
+Encrypted packets are now authenticated also; adds 4 bytes per packet
+Fixed potential access violation in hvdiPacketEncode
+Modified hcryptNewSalt to increase randomness
+Added variable bit rate LPC-10 (VBR-LPC-10) codec
+
+
+Version 0.9 beta
+Updated hvdiNewVOX and hvdiVOX to eliminate most floating point calculations so
+  that VOX is now suitable to use on StrongArm and other embedded CPUs
+Converted AGC to fixed point for StrongArm and other embedded CPUs, but it is
+  also four times faster on Pentium class CPUs
+Added HVDI_AUTO_VOX hint to enable internal VOX processing
+Added HVDI_VOX_LEVEL and HVDI_VOX_SPEED hints to control HVDI_AUTO_VOX settings
+Added HVDI_COMFORT_NOISE hint to create silence packets and generate comfort noise
+Added HVDI_NOISE_LEVEL hint to set comfort noise level/volume
+Updated hvdiNewEncryptionKey to slow down cracking attempts
+Added hvdiNewEncryptionSalt and hvdiDeleteEncryptionSalt
+Changed hvdiNewEncryptionKey so that it uses an optional salt value when creating the key
+Split LPC codec into two source files, encoder and decoder
+Added more tests to hvdiPacketIsVoice
+Cleaned up u-law codec, now only one source file
+Cleaned up GSM, now only three source files
+Changed license of LPC-10 and GSM to LGPL
+Split off encryption functions into a separate library, see hcrypt.h
+Renamed encryption functions to have hcrypt* prefixes
+
+
+Version 0.85 beta
+Major cleanup of LPC-10 code; reduced to encoder and decoder source files
+Reduced packet header from 5 bytes down to 1 or 3 bytes
+Added new hint HVDI_SEQUENCE to control if 2 sequence bytes are added to the packets
+Reduced the number of potential codecs from a max of 127 to a max of 63
+Removed extra 2 byte overhead added by encoders but no longer used
+Updated test.c to exercise the CELP codec
+
+
+Version 0.84 beta
+Fixed bug in OpenLPC encoder where some codec state variables were not updated
+Changed license of CELP and LPC to LGPL
+Fixed Linux compile for codectest.c and test.c
+Updated ftol.h file to be more portable
+Cleaned up code for GCC 3.2
+Fixed sequence wrapping problem in hvdiPacketDecode
+Added celp_set_encoder_option to CELP encoder
+More CELP encoder improvements to speed up code
+Ported codectest.c to Unicode and WinCE
+
+
+Version 0.83 beta
+Fixed memory corruption in CELP codec
+Fixed init problem in OpenLPC codec
+Cleaned up code for MacOS X
+Fixed compiler optimization bug in rate.c
+
+
+Version 0.82 beta
+Fixed multiline macro problems with some versions of GCC
+
+
+Version 0.81 beta
+New Linux makefile
+Eliminated Linux compile warnings in source files
+Modified codectest.c to add more error checking when opening .au source file
+Modified codectest.c and test.c to remove need for nl.h file from HawkNL
+
+
+Version 0.8 beta patch 1
+Fixed hvdiNewRate, source file was not renamed properly
+Fixed potential overflow problem with the unsigned short packet sequence number
+
+
+Version 0.8 beta
+Added CELP 4.8 Kbps codec
+Optimised and cleaned up CELP code
+Reduced CELP bit rate to 4.5 Kbps
+Added CELP 3.0 and 2.3 Kbps options
+Added CELP codebook length option to reduce the encoding CPU requirements as needed
+  with a gradual reduction in speech quality
+Increased the number of potential codecs from a max of 7 to a max of 127
+Renamed hvdiAGCInit to hvdiNewAGC
+Added hvdiDeleteAGC
+Renamed hvdiCreateEncoderState to hvdiNewEncoderState, hvdiCreateDecoderState to hvdiNewDecoderState,
+  hvdiFreeEncoderState to hvdiDeleteEncoderState, and hvdiFreeDecoderState to hvdiDeleteDecoderState
+Changed BF_KEY to native hvdi_key structure
+Renamed hvdiMakeEncryptionKey to hvdiNewEncryptionKey
+Added hvdiDeleteEncryptionKey
+Renamed hvdiIsVoicePacket to hvdiPacketIsVoice, hvdiDecodePacket to hvdiPacketDecode,
+  and hvdiEncodePacket to hvdiPacketEncode
+Added hvdiDecStateGetCodec
+Renamed hvdiRateInit to hvdiNewRate
+Added hvdiDeleteRate
+Added hvdiNewVOX and hvdiDeleteVOX
+Changed hvdiVOX argument order
+Added hvdiHint
+
+
+Version 0.71 beta
+Modified ADPCM to increase performance, encode and decode time reduced by 17%
+Cleaned up GSM code.
+Modified GSM to increase performance, encode time reduced by 54%, decode reduced by 74%!
+Enabled 'LTP_CUT' option for GSM encoding, 'LTP_CUT' reduces encode time by another 43%, or
+  74% reduced time compared to version 0.7!
+Wrapped all the include files for C++ compilers
+Fixed LPC-10 bug that was reducing the voice quality
+Cleaned up LPC-10 source code; minor 7% reduction in encode and decode time
+
+
+Version 0.7 beta
+Added the new OpenLPC codec that supports 1.4 and 1.8 Kbps
+Modified the LPC codec to encode at 4.8 Kbps (12 bytes/frame). It was actually encoding
+  at 5.2 Kbps (13 bytes/frame)
+Modified codectest.c (on Windows) to profile the codecs more accurately
+Modified the LPC codec to increase the performance. Reduced encode time by 12%, and
+  decode time by 41%!!
+Added hvdiVOX to enable voice activated transmission
+Added sample rate conversion functions, hvdiRateInit and hvdiRateFlow
+Added AGC (automatic gain control) functions, hvdiAGCInit and hvdiAGC
+Added hvdiMix mixer function
+
+
+Version 0.6 alpha
+Renamed two GSM source files to avoid name conflicts with other codecs
+Added test.c to exercise the API
+Modified hvdiSetCodec to return the codec frame size instead of just a NLboolean
+Removed dependence on HawkNL nl.h file
+
+
+Version 0.5 alpha
+Initial version, split off from HawkVoice
+
+

@@ -1,0 +1,254 @@
+Microsoft Developer Studio Workspace File, Format Version 5.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "HawkVoiceDI"=.\HawkVoiceDI.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name adpcm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name blowfish
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gsm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lpc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lpc10
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name md5
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ulaw
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name openlpc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name celp
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "HawkVoiceDI_DLL"=.\HawkVoiceDI_DLL.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name adpcm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name blowfish
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gsm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lpc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lpc10
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name md5
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ulaw
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name openlpc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name celp
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "_codectest"=.\_codectest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ulaw
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name adpcm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name celp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gsm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lpc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lpc10
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name openlpc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "_test"=.\_test.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ulaw
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HawkVoiceDI_DLL
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "adpcm"=.\src\adpcm\Adpcm.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "blowfish"=.\src\blowfish\Blowfish.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "celp"=.\src\celp\celp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gsm"=.\src\gsm\gsm.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "lpc"=.\src\lpc\Lpc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "lpc10"=.\src\lpc10\Lpc10.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "md5"=.\src\md5\md5.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "openlpc"=.\src\openlpc\openlpc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ulaw"=.\src\ulaw\ulaw.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

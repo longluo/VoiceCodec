@@ -1,0 +1,201 @@
+HawkVoiceDI API list.
+
+Version 0.91 beta
+
+General notes:
+
+See cryptapi.txt for the encryption functions.
+
+This is a no nonsense API that wraps all codec and encryption details for
+the developer.
+
+There is a lot of error detection, but I have not decided how to report the
+errors yet. I will either define multiple return codes, or add a 'getError'
+type function.
+
+Note that ALL codecs except ADPCM and U-Law require 8 KHz sample rate, and ALL require
+16 bit (short) samples.
+
+Be careful of encoding voice buffer sizes. If you ignore the frame size from
+hvdiSetCodec(), your buffer may be truncated, and you will have breaks of
+silence between your voice packets.
+
+I recommend the following codecs: On a LAN, use u-law or ADPCM for best quality
+(they even do very well with music and multiple voices). On the open 'net, use
+GSM if you have the extra 13.2 K of bandwidth, CELP, or LPC-10. Use LPC only if you
+don't have enough bandwidth for GSM, and you don't have the CPU cycles for
+CELP or LPC-10. The quality of LPC is MUCH worse than CELP or LPC-10.
+
+For Windows CE and other platforms that do not have hardware floating point
+instructions you should only use the u-law, ADPCM, or GSM codecs. The other codecs
+will not run in real-time even on a 400 MHz StongArm PocketPC. For these platforms
+I have fixed point LPC-10 and OpenLPC codecs that can be licesed separately.
+
+
+/* HawkVoiceDI API */
+
+hvdi_enc_state* hvdiNewEncState(void)
+
+  Creates an encoder state. You must create one encoder state to encode your
+  out going voice stream. For each encoder state you MUST set the codec with
+  hvdiSetCodec().
+
+
+hvdi_dec_state* hvdiNewDecState(void)
+
+  Creates a decoder state. You must create a decoder state for each incoming
+  voice stream.
+
+
+void hvdiDeleteEncState(hvdi_enc_state *state)
+
+  Frees an encoder state.
+
+
+void hvdiDeleteDecState(hvdi_dec_state *state)
+
+  Frees a decoder state.
+
+
+int hvdiEncStateSetCodec(hvdi_enc_state *state, unsigned char codec)
+
+  Sets the codec for the encoder state. You must call this before you attempt
+  to encode a voice packet. You can call this at ANY time to change your
+  encoder codec. It returns either the buffer frame size the codec requires,
+  or NL_INVALID if an error occurred. The buffer can be a multiple of the
+  frame size and a frame size of '0' means any EVEN buffer size can be used.
+  For example, the GSM codec will return a frame size of 160, so a buffer of
+  800 samples would be valid and encode 1/10 of a second of sound.
+
+
+unsigned char hvdiDecStateGetCodec(hvdi_dec_state *state)
+
+  Get the codec that is being used for decoding.
+
+
+int hvdiPacketIsVoice(unsigned char *packet, int length)
+
+  Checks for a valid voice packet. Returns NL_TRUE is packet is valid, otherwise
+  returns NL_FALSE.
+
+
+int hvdiPacketDecode(unsigned char *packet, int paclen, short *buffer,
+                       int buflen, hcrypt_key *key, hvdi_dec_state *state)
+
+  Decrypts and decodes a voice packet into buffer. It returns the number of
+  samples in buffer, or NL_FALSE if an error occured. buflen is the number of
+  decoded short voice samples that can be written to buffer, it is NOT the
+  length in bytes. Note that it will drop UDP packets that are out of order.
+
+
+int hvdiPacketEncode(unsigned char *packet, int paclen, short *buffer,
+                       int buflen, hcrypt_key *key, hvdi_enc_state *state)
+
+  Encodes and encrypts buffer into a voice packet. Buflen is the number of
+  voice samples in buffer. It returns the size of the encoded packet in bytes.
+  If key is not NULL, it will be used to encrypt and validate the packet.
+
+
+hvdi_vox* hvdiNewVOX(int voxspeed, int noisethreshold)
+
+  Create a new hvdi_vox object. voxspeed is the number of samples of silence
+  before hvdiVOX returns 0(false), and noisethreshold is an int between
+  0(always pass) to 1000(never pass). 300 is a good starting point.
+
+
+int hvdiVOX(hvdi_vox *vox, short *buffer, int buflen)
+
+  Process a voice buffer with VOX, or voice activated transmission. It
+  returns 1 if the buffer should be sent, or 0 if it is silent (or at least
+  unvoiced).
+
+
+void hvdiDeleteVOX(hvdi_vox *vox)
+
+  Delete the hvdi_vox object.
+
+
+hvdi_rate * hvdiNewRate(int inrate, int outrate)
+
+  Create a hvdi_rate object for the sample rates supplied. Sample rates
+  are in samples per second.
+
+
+void hvdiRateFlow(hvdi_rate *rate, short *inbuf, short *outbuf, int *inlen,
+					int *outlen)
+
+  Resamples inbuf to outbuf. inlen and outlen are updated with the actual
+  number of samples processed. Note that inlen may return less than the
+  length of inbuf, so you may need to save several samples to add to the
+  beginning of the next buffer.
+
+
+void hvdiDeleteRate(hvdi_rate *rate)
+
+  Delete the hvdi_rate object.
+
+
+hvdi_agc * hvdiNewAGC(float level)
+
+  Create a new hvdi_agc object. level is the percent of max volume for the
+  sound buffer. The valid range is 0.5f to 1.0f, but the recomended
+  range is 0.8f to 0.95f. At 1.0f, some clipping might be experienced.
+
+
+void hvdiAGC(hvdi_agc *agc, short *buffer, int len)
+
+  Performs the AGC function on buffer. AGC is adjusted 10 times per second.
+
+
+void hvdiDeleteAGC(hvdi_agc *agc)
+
+  Delete the hvdi_agc object.
+
+
+void hvdiMix(short *outbuf, short **inbuf, int number, int inlen)
+
+  Mixes two or more buffers into outbuf. inbuf is an array of pointers to
+  the inbuf buffers, number is the number of inbuf buffers, and inlen is
+  the number of samples in each inbuf buffer.
+
+
+void hvdiHint(int name, int arg)
+
+  The first three change the encoding performance/quality of some codecs.
+
+             codec |      GSM LPT_CUT     CELP_CODEBOOK_LEN   CELP_FAST_GAIN
+-----------------------------------------------------------------------------
+  option           |
+--------------------
+HVDI_NORMAL        |          No               256                 No
+
+HVDI_FAST          |         Yes               128                Yes
+
+HVDI_FASTEST       |         Yes                32                Yes
+
+
+
+  HVDI_CELP_CODEBOOK directly sets the CELP codebook length from 32 to 256.
+
+  HVDI_SEQUENCE enables/disables sequence numbers added to packets. To disable,
+  arg = 0, to enable (default), arg != 0. The sequence adds 2 bytes to each packet.
+
+  HVDI_AUTO_VOX enables/disables automatic VOX processing inside hvdiPacketEncode().
+  To disable (default), arg = 0, to enable, arg != 0. If HVDI_COMFORT_NOISE is
+  enabled then hvdiPacketEncode() will create silence packets when the VOX does not
+  pass, otherwise hvdiPacketEncode() will return 0.
+
+  HVDI_VOX_LEVEL sets the VOX level when HVDI_AUTO_VOX is enabled. Valid range is
+  0 to 1000, and the default 300.
+
+  HVDI_VOX_SPEED sets the VOX speed when HVDI_AUTO_VOX is enabled. Default HVDI_VOX_FAST.
+
+  HVDI_COMFORT_NOISE enables/disables silence packets when HVDI_AUTO_VOX is enabled
+  when encoding, and enables/disables comfort noise when decoding.
+
+  HVDI_NOISE_LEVEL sets the comfort noise level when HVDI_COMFORT_NOISE is enabled.
+  Valid range 0 to 1000, default 100.
+
+  HVDI_AUTHENTICATE enables/disables the message authentication code (MAC) added to
+  packets. To disable (default), arg = 0, to enable, arg != 0. The MAC adds 4 bytes
+  to each packet.
